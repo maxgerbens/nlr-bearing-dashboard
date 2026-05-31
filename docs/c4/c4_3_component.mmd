@@ -1,0 +1,35 @@
+C4Component
+    title NLR Bearing Dashboard - Components (web-app)
+
+    Person(monteur, "Monteur", "")
+
+    Container_Boundary(webapp, "Streamlit Web-app") {
+        Component(home, "Startpagina", "app.py", "Uitleg + navigatie")
+        Component(trend, "Trendweergave", "pages/1_Trendweergave.py", "Een lager: trend per kenmerk + falenmoment + ruw signaal")
+        Component(vergelijk, "Vergelijkingsweergave", "pages/2_Vergelijkingsweergave.py", "Meerdere lagers naast elkaar per kenmerk")
+
+        Component(data, "Data-toegang", "src/data.py", "Leest features.csv en ruwe signalen; cached; filter-helpers")
+        Component(charts, "Grafieken", "src/charts.py", "Bouwt Plotly-figuren: trend, vergelijking, ruw signaal")
+        Component(config, "Configuratie", "src/config.py", "Paden, condities, faulttypes, labels - een bron van waarheid")
+        Component(features, "Kenmerk-berekeningen", "src/features.py", "RMS, kurtosis, crest factor (pure wiskunde)")
+    }
+
+    ContainerDb(featurescsv, "features.csv", "CSV", "")
+    System_Ext(rawdata, "Ruwe meetbestanden", "CSV")
+
+    Rel(monteur, home, "Opent")
+    Rel(monteur, trend, "Gebruikt")
+    Rel(monteur, vergelijk, "Gebruikt")
+
+    Rel(trend, data, "Vraagt lagers, metingen, ruw signaal")
+    Rel(trend, charts, "Vraagt trend- en signaalgrafiek")
+    Rel(trend, config, "Leest condities/labels")
+
+    Rel(vergelijk, data, "Vraagt lagers en metingen")
+    Rel(vergelijk, charts, "Vraagt vergelijkingsgrafiek")
+    Rel(vergelijk, config, "Leest condities/labels")
+
+    Rel(data, config, "Leest paden en mappings")
+    Rel(charts, config, "Leest preview-instellingen")
+    Rel(data, featurescsv, "Leest")
+    Rel(data, rawdata, "Leest 1 meetmoment")

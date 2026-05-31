@@ -1,0 +1,56 @@
+digraph C4Component {
+  bgcolor="white";
+  rankdir=TB;
+  compound=true; newrank=true;
+  nodesep=0.9; ranksep=1.0;
+  splines=ortho;
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=11,
+        width=2.5, height=1.0, margin="0.18,0.12", penwidth=0, fillcolor="#85bbf0", fontcolor="black"];
+  edge [fontname="Helvetica", fontsize=9, color="#444444", penwidth=1.1];
+
+  monteur [label=<<b>Monteur</b><br/><font point-size="8">[Persoon]</font>>,
+           fillcolor="#08427b", fontcolor="white", height=0.8];
+  featurescsv [label=<<b>features.csv</b><br/><font point-size="8">[CSV]</font>>,
+               fillcolor="#438dd5", fontcolor="white", shape=cylinder, style=filled, height=0.9];
+  rawdata [label=<<b>Ruwe meetbestanden</b><br/><font point-size="8">[Extern · CSV]</font>>,
+           fillcolor="#999999", fontcolor="white", height=0.8];
+
+  subgraph cluster_app {
+    label=<<b>Streamlit Web-app</b>>;
+    fontname="Helvetica"; fontsize=13; fontcolor="#333333"; labeljust="l";
+    style="rounded,dashed"; color="#888888"; penwidth=1.5; margin=24;
+
+    home      [label=<<b>Startpagina</b><br/><font point-size="8">[app.py]</font><br/><font point-size="9">Uitleg + navigatie</font>>];
+    trend     [label=<<b>Trendweergave</b><br/><font point-size="8">[pages/1_Trendweergave.py]</font><br/><font point-size="9">Eén lager: trend + falenmoment</font>>];
+    vergelijk [label=<<b>Vergelijkingsweergave</b><br/><font point-size="8">[pages/2_Vergelijkingsweergave.py]</font><br/><font point-size="9">Meerdere lagers per kenmerk</font>>];
+    data      [label=<<b>Data-toegang</b><br/><font point-size="8">[src/data.py]</font><br/><font point-size="9">Leest CSV's, cached, filters</font>>];
+    charts    [label=<<b>Grafieken</b><br/><font point-size="8">[src/charts.py]</font><br/><font point-size="9">Plotly: trend, vergelijking</font>>];
+    config    [label=<<b>Configuratie</b><br/><font point-size="8">[src/config.py]</font><br/><font point-size="9">Paden, condities — bron van waarheid</font>>];
+    features  [label=<<b>Kenmerk-berekeningen</b><br/><font point-size="8">[src/features.py]</font><br/><font point-size="9">RMS, kurtosis, crest factor</font>>];
+
+    home -> trend [style=invis];
+    trend -> vergelijk [style=invis];
+    charts -> data [style=invis];
+    config -> features [style=invis];
+
+    trend -> data;
+    trend -> charts;
+    trend -> config;
+    vergelijk -> data;
+    vergelijk -> charts;
+    vergelijk -> config;
+    data -> config;
+    charts -> config;
+  }
+
+  monteur -> home [constraint=false];
+  monteur -> trend [constraint=false];
+  monteur -> vergelijk [constraint=false];
+  data -> featurescsv [label="  leest  ", constraint=false];
+  data -> rawdata [label="  leest 1 meetmoment  ", constraint=false];
+
+  { rank=same; home; trend; vergelijk; }
+  { rank=same; data; charts; }
+  { rank=same; config; features; }
+  { rank=same; data; featurescsv; rawdata; }
+}

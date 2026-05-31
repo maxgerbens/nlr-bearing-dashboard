@@ -1,0 +1,21 @@
+digraph C4Context {
+  bgcolor="white";
+  rankdir=TB;
+  nodesep=0.8; ranksep=1.1;
+  splines=ortho;
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=12,
+        width=2.6, height=1.1, margin="0.2,0.15", penwidth=0];
+  edge [fontname="Helvetica", fontsize=10, color="#444444", penwidth=1.2];
+
+  monteur [label=<<b>Monteur</b><br/><font point-size="9">[Persoon]</font><br/><br/><font point-size="10">Bekijkt slijtageverloop<br/>en interpreteert zelf</font>>,
+           fillcolor="#08427b", fontcolor="white"];
+  dashboard [label=<<b>NLR Bearing Dashboard</b><br/><font point-size="9">[Software systeem]</font><br/><br/><font point-size="10">Toont trillingskenmerken<br/>(RMS, kurtosis, crest factor)<br/>over de levensduur</font>>,
+             fillcolor="#1168bd", fontcolor="white"];
+  xjtu [label=<<b>XJTU-SY Bearing Dataset</b><br/><font point-size="9">[Extern · CSV op schijf]</font><br/><br/><font point-size="10">Run-to-failure data:<br/>15 lagers, 3 condities</font>>,
+        fillcolor="#999999", fontcolor="white"];
+
+  monteur -> dashboard [label="  Kiest conditie/lager,\l  bekijkt grafieken [Browser]\l"];
+  dashboard -> xjtu [label="  Leest ruwe\l  meetbestanden [CSV]\l"];
+
+  { rank=same; monteur; }
+}

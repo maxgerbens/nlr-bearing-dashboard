@@ -1,0 +1,41 @@
+digraph C4Container {
+  bgcolor="white";
+  rankdir=TB;
+  compound=true; newrank=true;
+  nodesep=1.0; ranksep=1.1;
+  splines=ortho;
+  node [shape=box, style="filled,rounded", fontname="Helvetica", fontsize=12,
+        width=2.7, height=1.15, margin="0.2,0.15", penwidth=0];
+  edge [fontname="Helvetica", fontsize=10, color="#444444", penwidth=1.2];
+
+  monteur [label=<<b>Monteur</b><br/><font point-size="9">[Persoon]</font>>,
+           fillcolor="#08427b", fontcolor="white", height=0.9];
+  rawdata [label=<<b>Ruwe meetbestanden</b><br/><font point-size="9">[Extern · CSV]</font><br/><br/><font point-size="10">data/conditie/lager/minuut.csv<br/>32.768 metingen elk</font>>,
+           fillcolor="#999999", fontcolor="white"];
+
+  subgraph cluster_sys {
+    label=<<b>NLR Bearing Dashboard</b>>;
+    fontname="Helvetica"; fontsize=13; fontcolor="#333333";
+    labeljust="l";
+    style="rounded,dashed"; color="#888888"; penwidth=1.5;
+    margin=24;
+
+    batch [label=<<b>Feature-builder</b><br/><font point-size="9">[Python · build_features.py]</font><br/><br/><font point-size="10">Berekent eenmalig<br/>de kenmerken</font>>,
+           fillcolor="#1168bd", fontcolor="white"];
+    webapp [label=<<b>Streamlit Web-app</b><br/><font point-size="9">[Python / Streamlit]</font><br/><br/><font point-size="10">Startpagina + 2 schermen<br/>(Trend &amp; Vergelijking)</font>>,
+            fillcolor="#1168bd", fontcolor="white"];
+    featurescsv [label=<<b>features.csv</b><br/><font point-size="9">[CSV-bestand]</font><br/><br/><font point-size="10">Vooraf berekende kenmerken<br/>per conditie/lager/minuut</font>>,
+                 fillcolor="#438dd5", fontcolor="white", shape=cylinder, style=filled];
+
+    batch -> webapp [style=invis];        // bind same rank inside cluster
+    batch -> featurescsv [label="  Schrijft [CSV]  "];
+    webapp -> featurescsv [label="  Leest (gecached) [CSV]  "];
+  }
+
+  monteur -> webapp [label="  Gebruikt [HTTP/Browser]  ", constraint=false];
+  webapp -> rawdata [label="  Leest 1 meetmoment\l  voor ruw signaal\l", constraint=false];
+  batch -> rawdata [label="  Leest alle\l  metingen [CSV]\l", constraint=false];
+
+  { rank=same; webapp; batch; }
+  { rank=same; featurescsv; rawdata; }   // rawdata sits beside the data store, outside the box
+}

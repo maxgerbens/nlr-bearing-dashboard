@@ -1,0 +1,11 @@
+C4Context
+    title NLR Bearing Dashboard - System Context
+
+    Person(monteur, "Monteur", "Bekijkt slijtageverloop van lagers en interpreteert zelf")
+
+    System(dashboard, "NLR Bearing Dashboard", "Toont trillingskenmerken (RMS, kurtosis, crest factor) van lagers over hun levensduur")
+
+    System_Ext(xjtu, "XJTU-SY Bearing Dataset", "Run-to-failure trillingsdata: 15 lagers, 3 belastingscondities (CSV op schijf)")
+
+    Rel(monteur, dashboard, "Kiest conditie/lager, bekijkt grafieken", "Browser")
+    Rel(dashboard, xjtu, "Leest ruwe meetbestanden", "Bestandssysteem / CSV")

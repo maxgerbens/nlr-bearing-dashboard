@@ -1,0 +1,18 @@
+C4Container
+    title NLR Bearing Dashboard - Containers
+
+    Person(monteur, "Monteur", "")
+
+    System_Boundary(sys, "NLR Bearing Dashboard") {
+        Container(webapp, "Streamlit Web-app", "Python / Streamlit", "Startpagina + 2 schermen (Trend- en Vergelijkingsweergave) in de browser")
+        Container(batch, "Feature-builder", "Python (build_features.py)", "Berekent eenmalig de kenmerken per meetmoment")
+        ContainerDb(featurescsv, "features.csv", "CSV-bestand", "Vooraf berekende kenmerken per (conditie, lager, minuut)")
+    }
+
+    System_Ext(rawdata, "Ruwe meetbestanden", "data/conditie/lager/minuut.csv - 32.768 metingen elk")
+
+    Rel(monteur, webapp, "Gebruikt", "HTTP/Browser")
+    Rel(batch, rawdata, "Leest alle metingen", "CSV")
+    Rel(batch, featurescsv, "Schrijft", "CSV")
+    Rel(webapp, featurescsv, "Leest (gecached)", "CSV")
+    Rel(webapp, rawdata, "Leest 1 meetmoment voor ruw signaal", "CSV")
